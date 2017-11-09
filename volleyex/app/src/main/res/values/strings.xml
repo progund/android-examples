@@ -1,5 +1,7 @@
 <resources>
   <string name="app_name">VolleyExample</string>
-  <string name="switch_button_text">Switch</string>
+  <string name="volley_activity_button_text">VolleyActivity</string>
+  <string name="semi_separate_activity_button_text">SemiSeparateActivity</string>
+  <string name="separate_activity_activity_button_text">SeparateActivity</string>
   <string name="update_button_text">Update</string>
 </resources>
