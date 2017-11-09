@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -26,11 +27,12 @@ import org.json.JSONObject;
 
 public class VolleyActivity extends AppCompatActivity {
 
-  private static final String LOG_TAG = VolleyActivity.class.getName();
+  private static final String LOG_TAG = VolleyActivity.class.getSimpleName();
 
   private ArrayAdapter<Member> adapter;
   private ListView listview;
   private List<Member> members;
+  private VolleyActivity me;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +45,12 @@ public class VolleyActivity extends AppCompatActivity {
         android.R.layout.simple_list_item_1, members);
 
     listview.setAdapter(adapter);
+
+    me = this;
+    ((TextView) findViewById(R.id.label)).setText(LOG_TAG);
   }
 
-  private void resetListView(){
+  private void resetListView() {
     listview = (ListView) findViewById(R.id.volley_list);
     adapter = new ArrayAdapter<>(this,
         android.R.layout.simple_list_item_1, members);
@@ -78,55 +83,55 @@ public class VolleyActivity extends AppCompatActivity {
     return memberList;
   }
 
-  private void showToast(String msg) {
-    Log.d(LOG_TAG, " showToast: " + msg);
-    Context context = getApplicationContext();
-    int duration = Toast.LENGTH_SHORT;
-
-    Toast toast = Toast.makeText(context, msg, duration);
-    toast.show();
-  }
-
   // The code below is "slightly" (nudge nudge) based on:
   //   https://developer.android.com/training/volley/request.html
   private void getMembers() {
 
-  RequestQueue queue = Volley.newRequestQueue(this);
+    RequestQueue queue = Volley.newRequestQueue(this);
 
-  JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
-      Request.Method.GET,
-      Settings.url,
-      null,
-      new Response.Listener<JSONArray>() {
+    JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+        Request.Method.GET,
+        Settings.url,
+        null,
+        new Response.Listener<JSONArray>() {
 
-        @Override
-        public void onResponse(JSONArray array) {
-          members = jsonToMembers(array);
-          resetListView();
-          showToast("Members updated");
+          @Override
+          public void onResponse(JSONArray array) {
+            members = jsonToMembers(array);
+            resetListView();
+            ActivitySwitcher.showToast(me, "Members updated");
 
-        }
-      }, new Response.ErrorListener() {
+          }
+        }, new Response.ErrorListener() {
 
-    @Override
-    public void onErrorResponse(VolleyError error) {
-      Log.d(LOG_TAG, " cause: " + error.getCause().getMessage());
-      showToast("Members update failed");
-    }
-  });
+      @Override
+      public void onErrorResponse(VolleyError error) {
+        Log.d(LOG_TAG, " cause: " + error.getCause().getMessage());
+        ActivitySwitcher.showToast(me, "Members update failed");
+      }
+    });
 
-  // Add the request to the RequestQueue.
-  queue.add(jsonArrayRequest);
+    // Add the request to the RequestQueue.
+    queue.add(jsonArrayRequest);
 
   }
 
-  public void switchClick(View view) {
-    Intent intent = new Intent(this, SeparateActivity.class);
-    startActivity(intent);
+
+  /* Common */
+  public void volleyActivityClick(View view) {
+    ActivitySwitcher.switchToVolleyActivity(this);
+  }
+
+  public void semiSeparateClick(View view) {
+    ActivitySwitcher.switchToSemiSeparateActivity(this);
+  }
+
+  public void separateClick(View view) {
+    ActivitySwitcher.switchToSeparateActivity(this);
   }
 
   public void updateClick(View view) {
-    showToast("Updating members");
+    ActivitySwitcher.showToast(this, "Updating members");
     getMembers();
   }
 
