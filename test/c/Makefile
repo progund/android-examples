@@ -62,7 +62,7 @@ neg-test-c: $(READ_PROG) $(PRINT_PROG)
 	@echo 
 	@echo "--== PRINT ==--"
 	@echo "Testing print with null"
-	@./$(PRINT_PROG) 
+	@./$(PRINT_PROG) arguments to force null 
 	@echo 
 
 

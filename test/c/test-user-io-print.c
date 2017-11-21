@@ -10,6 +10,7 @@ int main(int argc, char **argv)
   // This is indeed an ugly hack .... 
   if (argc>1)
     {
+      fprintf(stderr, "Ignoring %s\n", argv[1]);
       message = NULL;
     }
 
