@@ -1,0 +1,8 @@
+<resources>
+  <string name="app_name">AndroidChat</string>
+  <string name="server_name">Server name</string>
+  <string name="server_port">Server port</string>
+  <string name="settings_menu">Settings</string>
+  <string name="close_chat">Close</string>
+  <string name="start_chat">Start</string>
+</resources>
