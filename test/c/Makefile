@@ -7,6 +7,8 @@ CLASSES=ReadFile.class
 CC=gcc
 CFLAGS= -pedantic -Wconversion -Wall -Werror -Wextra -Wstrict-prototypes 
 
+JAVA_SOURCES=$(CLASSES:%.class=%.java)
+
 %.class:%.java
 	javac $<
 
@@ -80,3 +82,6 @@ gcov:
 
 lcov: gcov 
 	lcov --directory .  --capture --output-file  user-info.info && genhtml -o coverage user-info.info 
+
+checkstyle: 
+	for fille in $(JAVA_SOURCES) ; do checkstyle -c google_checks.xml ReadFile.java; done
