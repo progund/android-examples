@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ContentHandler;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import se.juneday.androidchat.ChatHandler.ChatHandlerStatus;
@@ -52,14 +53,14 @@ public enum ChatHandlerStatus{
   private BufferedReader in;
   private PrintWriter out;
 
-  private Context context;
+//  private Context context;
   private static ChatHandler instance;
 
   boolean running;
 
-  private ChatHandler(Context context) {
+  public ChatHandler(/*Context context*/) {
     listeners = new ArrayList<>();
-    this.context = context;
+  //  this.context = context;
   }
 
   public void setServer(String server, int port) {
@@ -68,24 +69,31 @@ public enum ChatHandlerStatus{
     setupSocket();
   }
 
+  /*
   public static synchronized ChatHandler getInstance(Context context) {
     if (instance==null) {
       instance = new ChatHandler(context);
     }
     return instance;
   }
-
+*/
   private void setupSocket(){
     try {
-      Log.d(LOG_TAG, "setupSocket()");
+      Log.d(LOG_TAG, "setupSocket() creating socket");
       socket = new Socket(server, port);
+      Log.d(LOG_TAG, "setupSocket() setting timeout");
+      socket.setSoTimeout(1000);
+      Log.d(LOG_TAG, "setupSocket() getting input");
       in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+      Log.d(LOG_TAG, "setupSocket() getting output");
       out=new PrintWriter(socket.getOutputStream(), true);
+      Log.d(LOG_TAG, "setupSocket() all done");
     } catch (IOException e) {
       e.printStackTrace();
     }
     Log.d(LOG_TAG, "setupSocket() socket: " + socket);
   }
+
 
   public boolean isRunning(){
     return running;
@@ -93,7 +101,9 @@ public enum ChatHandlerStatus{
 
   @Override
   protected void onPostExecute(ChatHandlerStatus status) {
+    running=false;
     informListeners(status);
+    instance=null;
   }
 
 
@@ -133,8 +143,11 @@ public enum ChatHandlerStatus{
 
   @Override
   protected ChatHandlerStatus doInBackground(Void... voids) {
-    setupSocket();
+    if(isRunning()) {
+      return ChatHandlerStatus.CHAT_HANDLER_SOCKET_FAILURE;
+    }
     running=true;
+    setupSocket();
     while (!isCancelled()) {
       Log.d(LOG_TAG, "Listening ...");
       if (socket == null) {
@@ -143,19 +156,21 @@ public enum ChatHandlerStatus{
       }
       if (socket == null) {
         running=false;
+        instance=null;
         return ChatHandlerStatus.CHAT_HANDLER_SOCKET_FAILURE;
       }
 
-      Log.d(LOG_TAG, " info: " + socket + " " + in + " " + out);
-      Log.d(LOG_TAG, "Trying to read");
-
       try {
-        Log.d(LOG_TAG, "reading...");
         String msg = in.readLine();
-        //String msg = "hallo";
-        Log.d(LOG_TAG, "read..." + msg);
+        if (msg==null) {
+          running=false;
+          instance=null;
+          return ChatHandlerStatus.CHAT_HANDLER_SOCKET_FAILURE;
+        }
+
         publishProgress(msg);
-        Log.d(LOG_TAG, "Got: " + msg);
+      } catch (SocketTimeoutException e) {
+        // expected if no activity, loop again
       } catch (IOException e) {
         Log.d(LOG_TAG, "Uh oh... exception while reading");
         e.printStackTrace();

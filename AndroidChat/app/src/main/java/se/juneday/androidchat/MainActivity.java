@@ -1,5 +1,6 @@
 package se.juneday.androidchat;
 
+import android.content.ClipData.Item;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -7,6 +8,7 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -40,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
   private TextView messages;
   private Button sendButton;
 
-//s  boolean chatRunning;
-
   private String server;
   private int port;
+
+  private ChatHandler chat;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +55,42 @@ public class MainActivity extends AppCompatActivity {
     StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
     StrictMode.setThreadPolicy(policy);
 
-    startChatClient();
+    if (!running) {
+      startChatClient();
+      running = true;
+    }
   }
-
-
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.settings_menu, menu);
     return true;
+  }
+
+
+  private boolean running;
+  private void updateState(MenuItem item){
+
+    if (running) {
+      Log.d(LOG_TAG, "running");
+      running=false;
+//      ChatHandler.getInstance(this).cancel(true);
+      chat.cancel(true);
+      chat=null;
+      item.setTitle(getString(R.string.start_chat));
+    } else {
+      Log.d(LOG_TAG, "NOT running");
+      running=true;
+      item.setTitle(getString(R.string.close_chat));
+      startChatClient();
+    }
+    // Give some time for chat to start/close
+    try {
+      Thread.sleep(500);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
 
@@ -73,12 +101,13 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, SettingsActivity.class);
         startActivity(i);
         return true;
-      case R.id.action_close:
-        ChatHandler.getInstance(this).cancel(true);
+      case R.id.action_state:
+        updateState(item);
         return true;
-      case R.id.action_start:
+      /*case R.id.action_start:
         startChatClient();
         return true;
+        */
     }
     return true;
   }
@@ -91,12 +120,20 @@ public class MainActivity extends AppCompatActivity {
   }
 
   public void startChatClient() {
-    Log.d(LOG_TAG, "startChatClient(): status: " + ChatHandler.getInstance(this).isRunning());
-    if (ChatHandler.getInstance(this).isRunning()) {
+    //Log.d(LOG_TAG, "startChatClient(): status: " + ChatHandler.getInstance(this).isRunning());
+    if (chat==null) {
+      chat = new ChatHandler();
+    } else {
+      feedbackStatus("Chat already running");
+      return;
+    }
+/*    if (chat.isRunning()) {
       feedbackStatus("Chat already running");
       return ;
     }
-    ChatHandler.getInstance(this).addMessageListener(new MessageListener() {
+    */
+    //ChatHandler.getInstance(this).addMessageListener(new MessageListener() {
+    chat.addMessageListener(new MessageListener() {
       @Override
       public void onMessage(String message) {
 //        messaQeueue.add(message);
@@ -116,15 +153,16 @@ public class MainActivity extends AppCompatActivity {
       }
     });
     Log.d(LOG_TAG, "Starting chat client...");
-    //  ChatHandler.getInstance(this).start();
     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
     server = preferences.getString("pref_server_name", null);
     port = Integer.parseInt(preferences.getString("pref_server_port", null));
     Log.d(LOG_TAG, "server name: " + server);
     Log.d(LOG_TAG, "server port: " + port);
 
-    ChatHandler.getInstance(this).setServer(server, port);
-    ChatHandler.getInstance(this).execute(null, null, null);
+//    ChatHandler.getInstance(this).setServer(server, port);
+  //  ChatHandler.getInstance(this).execute(null, null, null);
+    chat.setServer(server, port);
+    chat.execute(null, null, null);
     Log.d(LOG_TAG, "Started chat client...");
   }
 
@@ -139,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
     sendButton = (Button) findViewById(R.id.send_button);
 
     messages.setMovementMethod(new ScrollingMovementMethod());
-   // chatRunning=true;
+    // chatRunning=true;
     Log.d(LOG_TAG, " <-- onStart()");
   }
 
@@ -148,7 +186,10 @@ public class MainActivity extends AppCompatActivity {
     if (msg.equals("")) {
       Log.d(LOG_TAG, "sendMessage, NOT SENDING EMPTY STRING");
     } else {
-      ChatHandler.getInstance(this).sendMessage(msg);
+      if(chat!=null) {
+//        ChatHandler.getInstance(this).sendMessage(msg);
+        chat.sendMessage(msg);
+      }
       userInput.setText("");
     }
   }

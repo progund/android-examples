@@ -8,13 +8,14 @@
     app:showAsAction="ifRoom"/>
 
   <item
-    android:id="@+id/action_close"
+    android:id="@+id/action_state"
     android:title="@string/close_chat"
     app:showAsAction="ifRoom"/>
 
+  <!--
   <item
     android:id="@+id/action_start"
     android:title="@string/start_chat"
     app:showAsAction="ifRoom"/>
-
+-->
 </menu>
