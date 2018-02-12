@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">SpinnerExample</string>
+
+    <string-array name="great_bands_array">
+      <item>Lynyrd Skynyrd</item>
+      <item>Allman Brothers</item>
+      <item>Jame's gang</item>
+    </string-array>
+
+</resources>
