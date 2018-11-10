@@ -43,6 +43,9 @@ captures/
 .idea/dictionaries
 .idea/libraries
 
+generated/*
+intermediates/*
+
 # Keystore files
 *.jks
 

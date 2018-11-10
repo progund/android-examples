@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
   @Override
   public void onStart() {
     super.onStart();
-//    setContent("<html><body>lksdjflkj<br><pre>code</pre><h1>h1</h1><br><h2>h2</h2><br>asdasd</body></html>");
   }
 
   public void setContent(String html) {
