@@ -94,6 +94,14 @@ clean:
 	-find $(ANDROID_APP_DIR)/se -name "*.class" | xargs rm -f 
 
 #
+# rule for really cleaning up
+#
+really-clean: clean
+	@echo " ---=== Really leaning up ===---"
+	-rm external/*.zip
+	-rm -fr external/adhd* external/object-* external/android-stubs* adhd* external/se $(ORG_JSON)
+
+#
 # rule for cleaning up
 #
 info:
