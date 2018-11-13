@@ -15,4 +15,13 @@ build_stubs() {
     exit_if_error $? "Failed building stub jar"
 }
 
+build_oc() {
+    echo " -----===== building ObjectCache =====-----"
+    cd object-cache && javac se/juneday/*.java && cd ..
+    exit_if_error $? "Failed building ObjectCache"
+}
+
 build_stubs
+#build_oc
+
+echo "Build finished :)"

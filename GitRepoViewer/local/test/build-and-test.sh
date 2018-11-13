@@ -15,7 +15,7 @@ DIR_SEP=:
 
 CLASSPATH=${ORG_JSON_JAR}${DIR_SEP}${ANDROID_CODE_DIR}${DIR_SEP}${TEST_CODE_DIR}
 
-dload() {
+dload_json() {
     echo " -----===== downloading jar file =====-----"
     if [ ! -f ${ORG_JSON_JAR} ]
     then
