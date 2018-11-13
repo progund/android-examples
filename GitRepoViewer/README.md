@@ -1,4 +1,6 @@
-# Lecture: (http://wiki.juneday.se/mediawiki/index.php/Android_-_client_strategy)
+# Lecture:
+
+This app is part of a lecture: (http://wiki.juneday.se/mediawiki/index.php/Android_-_client_strategy)
 
 
 # The application
