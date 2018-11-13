@@ -1,6 +1,11 @@
 package se.juneday.gitrepoviewer.domain;
 
-public class Repository {
+import java.io.Serializable;
+
+public class Repository implements Serializable {
+
+  private static final long serialVersionUID = 1L;
+
 
   /*
    *

@@ -1,5 +1,6 @@
 package se.juneday.gitrepoviewer.util;
 
+import android.util.Log;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -12,18 +13,13 @@ import static se.juneday.gitrepoviewer.domain.Repository.RepoAccess;
 
 public class JsonParser {
 
-  public static List<Repository> parse(String json) {
-    
-    List<Repository> repos = new ArrayList<>();
-    JSONArray jsonArray = null;
+  private static final String LOG_TAG = JsonParser.class.getName();
 
-    try {
-      jsonArray = new JSONArray(json);
-    }  catch ( JSONException e ) {
-      return repos;
-    }
+  public static List<Repository> parse(JSONArray jsonArray) {
+    List<Repository> repos = new ArrayList<>();
 
     for(int i = 0; i < jsonArray.length(); i++) {
+      Log.d(LOG_TAG, "parse() for: i: " + i);
 
       JSONObject jsonObject = null;
 
@@ -35,15 +31,15 @@ public class JsonParser {
 
       //default values
       String name = null;
-      String description = ""; 
+      String description = "";
       RepoAccess repoAccess = RepoAccess.PUBLIC;
-      String license = ""; 
+      String license = "";
 
       try {
         name = jsonObject.getString("name");
       } catch ( JSONException e ) {
         continue;
-      }      
+      }
 
       // extract description (if any)
       try {
@@ -60,7 +56,7 @@ public class JsonParser {
         }
       } catch ( JSONException e ) {
         continue;
-      }      
+      }
 
 
       // extract license (if any)
@@ -72,11 +68,26 @@ public class JsonParser {
       }
 
       repos.add(new Repository(name,
-                               description,
-                               license,
-                               repoAccess));
+          description,
+          license,
+          repoAccess));
     }
     return repos;
+  }
+
+  public static List<Repository> parse(String json) {
+    Log.d(LOG_TAG, "parse()");
+
+    JSONArray jsonArray = null;
+
+    try {
+      jsonArray = new JSONArray(json);
+    }  catch ( JSONException e ) {
+      Log.d(LOG_TAG, "can not create array. " + e);
+      return new ArrayList<>();
+    }
+
+    return parse(jsonArray);
   }
 
  
