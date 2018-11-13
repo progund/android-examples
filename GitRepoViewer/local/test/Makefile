@@ -58,11 +58,13 @@ help:
 	@echo "  make [rule]"
 	@echo 
 	@echo "RULES"
-	@echo "  clean    - cleans up "
-	@echo "  check    - performs tests (compiles as well)"
-	@echo "  compile  - compiles java test code"
-	@echo "  info     - output information about tests"
-	@echo "  external - download and build (needed) external software"
+	@echo "  clean        - cleans up compiled code "
+	@echo "  really-clean - cleans up external sw"
+	@echo "  check        - performs tests (compiles as well)"
+	@echo "  compile      - compiles java test code"
+	@echo "  info         - output information about tests"
+	@echo "  external     - download and build external software"
+	@echo "  adhd         - extract cached data from app on device"
 	@echo
 	@echo "EXAMPLES"
 	@echo "  make clean"
@@ -74,12 +76,12 @@ help:
 #
 # target to do it all
 #
-compile: $(TEST_CLASSES)
+compile: external $(TEST_CLASSES)
 
 #
 # rule for testing code
 #
-check: $(TEST_CLASSES)
+check: external $(TEST_CLASSES)
 	@echo " ---=== Test with all classes ===---"
 	@echo " ---=== $(TEST_CLASS_NAMES) ===---"
 	@$(foreach var,$(TEST_CLASS_NAMES), echo java -cp $(CLASSPATH) $(var); java -cp $(CLASSPATH) $(var) || exit 1; )
