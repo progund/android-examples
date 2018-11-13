@@ -20,7 +20,7 @@ ANDROID_LOG=$(ANDROID_STUBS_DIR)/android/util/Log.java
 	javac -cp $(CLASSPATH) $<
 
 
-all: $(TEST_CLASSES) $(ANDROID_LOG)
+all: $(TEST_CLASSES) $(ANDROID_LOG) $(ORG_JSON)
 
 check: all
 	@echo " ---=== Test all classes ===---"
@@ -28,13 +28,20 @@ check: all
 
 clean:
 	@echo " ---=== Cleaning up ===---"
-	rm -fr $(TEST_CLASSES)
+	rm -fr $(TEST_CLASSES) android
 	-find . -name "*~" | xargs rm -f 
+
+really-clean: clean
+	@echo " ---=== Really cleaning up ===---"
+	rm -fr $(ORG_JSON) android master.zip
 
 $(ANDROID_LOG):
 	mkdir -p android
 	wget https://github.com/progund/android-stubs/archive/master.zip
 	cd android && unzip ../master.zip
+
+$(ORG_JSON):
+	        wget 'https://search.maven.org/remotecontent?filepath=org/json/json/20171018/json-20171018.jar' -O $@
 
 info:
 	@echo "Test files:                $(TEST_SRC)"
