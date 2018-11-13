@@ -102,6 +102,7 @@ really-clean: clean
 	@echo " ---=== Really leaning up ===---"
 	-rm external/*.zip
 	-rm -fr external/adhd* external/object-* external/android-stubs* adhd* external/se $(ORG_JSON)
+	-rm -fr se/juneday/Obje*
 
 #
 # rule for cleaning up
