@@ -91,7 +91,7 @@ check: external $(TEST_CLASSES)
 #
 clean:
 	@echo " ---=== Cleaning up ===---"
-	rm -fr $(TEST_CLASSES) android
+	rm -fr $(TEST_CLASSES) android repositories_serialized.data external/repositories_serialized.data 
 	-find . -name "*~" | xargs rm -f 
 	-find $(ANDROID_APP_DIR)/se -name "*.class" | xargs rm -f 
 
