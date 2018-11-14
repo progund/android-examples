@@ -126,12 +126,12 @@ external:
 #
 .PHONY: adhd
 adhd:
-	@echo -n "Making sure only one attached device: "
+	@echo -n "Making sure only one device is attached: "
 	@if [ `${ADHD_SH} -ld | grep emulator | wc -l` -ne 1 ] ; then echo "Only one attached device allowed"; exit 1; fi
 	@echo " OK"
 
 	@echo -n "Making sure GitRepoViewer is installed: "
-	@if [ `${ADHD_SH} -la | grep gitrepoviewer | wc -l` -ne 1 ] ; then echo "GitRepoViewer does not seem to be instakked"; exit 1; fi
+	@if [ `${ADHD_SH} -la | grep gitrepoviewer | wc -l` -ne 1 ] ; then echo "GitRepoViewer does not seem to be installed"; exit 1; fi
 	@echo " OK"
 
 	@echo -n "Extracting serialized data from device/app: "
