@@ -1,5 +1,24 @@
 ##########################################################
 #
+# Makefile used to test GitRepoViewer (an example Android project)
+# used in Juneday's course material
+#
+# Authors:   Rikard Fröberg, Henrik Sandklef
+# Copyright: 2018 juneday.se
+# License:   GPLv3
+#   - no, we're not adding license info in this file as we should :(
+#
+##########################################################
+#
+# to get some help on this makefile, type:
+#    make help
+#
+##########################################################
+
+
+
+##########################################################
+#
 # Settings for the android app, both
 #  * test code (for android app) and
 #  * android app code and
@@ -51,7 +70,7 @@ CLASSPATH=$(EXTERNAL_SW_CLASSPATH):$(ANDROID_APP_DIR):.
 # help informaiton target 
 #
 help:
-	@echo "Makefile for building and executing test for GitRepoViewer"
+	@echo "Makefile for building and executing tests for GitRepoViewer"
 	@echo 
 	@echo "SYNTAX"
 	@echo 
