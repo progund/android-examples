@@ -4,7 +4,10 @@ import java.io.Serializable;
 
 public class Repository implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 5608299575527979006L;
+  /* Generated with:
+   * serialver -classpath GitRepoViewer/app/src/main/java/ se.juneday.gitrepoviewer.domain.Repository
+   */
 
 
   /*
