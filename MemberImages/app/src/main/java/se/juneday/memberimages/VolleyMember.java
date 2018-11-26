@@ -14,6 +14,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import se.juneday.memberimages.domain.Member;
+
 public class VolleyMember {
 
   private static final String LOG_TAG = VolleyMember.class.getName();
@@ -41,7 +43,7 @@ public class VolleyMember {
         String name = row.getString("name");
         String email = row.getString("email");
 
-        Member m = new Member(name, email);
+        Member m = new Member(name, email, null);
         memberList.add(m);
       } catch (JSONException e) {
         ; // is ok since this is debug

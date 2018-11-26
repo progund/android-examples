@@ -21,6 +21,8 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import se.juneday.memberimages.domain.Member;
 import se.juneday.volleyex.volleyexample.VolleyMember.MemberChangeListener;
 
 
