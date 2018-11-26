@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context="se.juneday.volleyex.volleyexample.VolleyActivity">
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/label"/>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <Button
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/volley_button"
+      android:text="@string/volley_activity_button_text"
+      android:onClick="volleyActivityClick"/>
+
+    <Button
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/semi_separate_button"
+      android:text="@string/semi_separate_activity_button_text"
+      android:onClick="semiSeparateClick"/>
+
+    <Button
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/separate_button"
+      android:text="@string/separate_activity_activity_button_text"
+      android:onClick="separateClick"/>
+
+    <Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/update_button"
+    android:text="@string/update_button_text"
+    android:onClick="updateClick"/>
+
+  </LinearLayout>
+
+
+  <ListView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/volley_list">
+  </ListView>
+
+  </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>
