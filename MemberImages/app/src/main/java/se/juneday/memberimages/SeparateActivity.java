@@ -1,4 +1,4 @@
-package se.juneday.volleyex.volleyexample;
+package se.juneday.memberimages;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +23,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import se.juneday.memberimages.domain.Member;
-import se.juneday.volleyex.volleyexample.VolleyMember.MemberChangeListener;
 
 
 public class SeparateActivity extends AppCompatActivity {
@@ -46,15 +45,13 @@ public class SeparateActivity extends AppCompatActivity {
     me = this;
 
     // register to listen to member updates in VolleyMember
-    VolleyMember.getInstance(this).addMemberChangeListener(new MemberChangeListener() {
+    VolleyMember.getInstance(this).addMemberChangeListener(new VolleyMember.MemberChangeListener() {
       @Override
       public void onMemberChangeList(List<Member> members) {
         resetListView(members);
         ActivitySwitcher.showToast(me, "Members updated");
       }
     });
-
-    ((TextView)findViewById(R.id.label)).setText(LOG_TAG);
   }
 
   private void resetListView(List<Member> members) {
@@ -83,12 +80,6 @@ public class SeparateActivity extends AppCompatActivity {
   }
 
   /* Common */
-  public void volleyActivityClick(View view) {
-    ActivitySwitcher.switchToVolleyActivity(this);
-  }
-  public void semiSeparateClick(View view) {
-    ActivitySwitcher.switchToSemiSeparateActivity(this);
-  }
   public void separateClick(View view) {
     ActivitySwitcher.switchToSeparateActivity(this);
   }

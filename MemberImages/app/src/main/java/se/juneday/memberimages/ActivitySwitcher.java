@@ -1,4 +1,4 @@
-package se.juneday.volleyex.volleyexample;
+package se.juneday.memberimages;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,16 +19,8 @@ public class ActivitySwitcher {
     context.startActivity(intent);
   }
 
-  public static void switchToSemiSeparateActivity(Activity context) {
-    switchActivity(SemiSeparateActivity.class, context);
-  }
-
   public static void switchToSeparateActivity(Activity context) {
     switchActivity(SeparateActivity.class, context);
-  }
-
-  public static void switchToVolleyActivity(Activity context) {
-    switchActivity(VolleyActivity.class, context);
   }
 
   public static void showToast(Context context, String msg) {

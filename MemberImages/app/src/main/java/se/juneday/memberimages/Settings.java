@@ -1,4 +1,4 @@
-package se.juneday.volleyex.volleyexample;
+package se.juneday.memberimages;
 
 /**
  * Created by hesa on 2017-11-08.
