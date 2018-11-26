@@ -1,5 +1,24 @@
 ##########################################################
 #
+# Makefile used to test GitRepoViewer (an example Android project)
+# used in Juneday's course material
+#
+# Authors:   Rikard Fröberg, Henrik Sandklef
+# Copyright: 2018 juneday.se
+# License:   GPLv3
+#   - no, we're not adding license info in this file as we should :(
+#
+##########################################################
+#
+# to get some help on this makefile, type:
+#    make help
+#
+##########################################################
+
+
+
+##########################################################
+#
 # Settings for the android app, both
 #  * test code (for android app) and
 #  * android app code and
@@ -51,7 +70,7 @@ CLASSPATH=$(EXTERNAL_SW_CLASSPATH):$(ANDROID_APP_DIR):.
 # help informaiton target 
 #
 help:
-	@echo "Makefile for building and executing test for GitRepoViewer"
+	@echo "Makefile for building and executing tests for GitRepoViewer"
 	@echo 
 	@echo "SYNTAX"
 	@echo 
@@ -91,7 +110,7 @@ check: external $(TEST_CLASSES)
 #
 clean:
 	@echo " ---=== Cleaning up ===---"
-	rm -fr $(TEST_CLASSES) android
+	rm -fr $(TEST_CLASSES) android repositories_serialized.data external/repositories_serialized.data 
 	-find . -name "*~" | xargs rm -f 
 	-find $(ANDROID_APP_DIR)/se -name "*.class" | xargs rm -f 
 
@@ -102,6 +121,7 @@ really-clean: clean
 	@echo " ---=== Really leaning up ===---"
 	-rm external/*.zip
 	-rm -fr external/adhd* external/object-* external/android-stubs* adhd* external/se $(ORG_JSON)
+	-rm -fr se/juneday/Obje*
 
 #
 # rule for cleaning up
@@ -125,12 +145,12 @@ external:
 #
 .PHONY: adhd
 adhd:
-	@echo -n "Making sure only one attached device: "
+	@echo -n "Making sure only one device is attached: "
 	@if [ `${ADHD_SH} -ld | grep emulator | wc -l` -ne 1 ] ; then echo "Only one attached device allowed"; exit 1; fi
 	@echo " OK"
 
 	@echo -n "Making sure GitRepoViewer is installed: "
-	@if [ `${ADHD_SH} -la | grep gitrepoviewer | wc -l` -ne 1 ] ; then echo "GitRepoViewer does not seem to be instakked"; exit 1; fi
+	@if [ `${ADHD_SH} -la | grep gitrepoviewer | wc -l` -ne 1 ] ; then echo "GitRepoViewer does not seem to be installed"; exit 1; fi
 	@echo " OK"
 
 	@echo -n "Extracting serialized data from device/app: "
