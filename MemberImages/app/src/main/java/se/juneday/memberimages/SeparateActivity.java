@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -44,6 +45,7 @@ public class SeparateActivity extends AppCompatActivity {
         ActivityHelper.showToast(me, "Members updated");
       }
 
+
       @Override
       public void onAvatarChange(Member member, Bitmap bitmap) {
         Log.d(LOG_TAG, "avatar Change on: " + bitmap);
@@ -74,9 +76,12 @@ public class SeparateActivity extends AppCompatActivity {
         View child = listview.getChildAt(index);
         if (child==null) {
             Log.d(LOG_TAG, " child null");
+            return;
         }
         ImageView iv = child.findViewById(R.id.avatar);
-        iv.setImageBitmap(bitmap);
+        if (iv != null) {
+            iv.setImageBitmap(bitmap);
+        }
     }
 
 
@@ -101,6 +106,16 @@ public class SeparateActivity extends AppCompatActivity {
     super.onStart();
       ActivityHelper.showToast(this, "Updating members");
     VolleyMember.getInstance(this).getMembers();
+
+      AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
+          @Override
+          public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+              Member member= (Member) members.get((int)l);
+              Log.d(LOG_TAG, "Member " + member.name() + " clicked  (" + i + "|" + l + ")");
+          }
+      };
+    listview.setOnItemClickListener(listener);
+
   }
 
   public void updateClick(View view) {
@@ -108,9 +123,6 @@ public class SeparateActivity extends AppCompatActivity {
     VolleyMember.getInstance(this).getMembers();
   }
 
-  /* Common */
-  public void separateClick(View view) {
-    ActivityHelper.switchToSeparateActivity(this);
-  }
+
 
 }

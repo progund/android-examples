@@ -11,7 +11,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +82,7 @@ public class VolleyMember {
             for (Member m : members) {
               if (!Utils.avatarExists(context, m)) {
                 Log.d(LOG_TAG, "  download avatar for " + m.name());
-                VolleyMember.getInstance(context).getAvatar(m);
+                VolleyMember.getInstance(context).fetchAvatar(m);
               } else {
                 Log.d(LOG_TAG, "  avatar already exists for " + m.name());
               }
@@ -102,7 +101,7 @@ public class VolleyMember {
     queue.add(jsonArrayRequest);
   }
 
-  public void getAvatar(final Member member) {
+  public void fetchAvatar(final Member member) {
     Log.d(LOG_TAG, "getAvatars()");
     RequestQueue queue = Volley.newRequestQueue(context);
     Log.d(LOG_TAG, "  url: " + member.avatarUrl());
@@ -110,7 +109,8 @@ public class VolleyMember {
 
     // if no url for member, use default
     if ( (url == null) || url.equals ("null") ) {
-      url = "https://avatars0.githubusercontent.com/u/19474334?s=400&u=1ade95c4770d096ec33107c05b51c99cfdd6ab01&v=4";
+//      url = "https://avatars0.githubusercontent.com/u/19474334?s=400&u=1ade95c4770d096ec33107c05b51c99cfdd6ab01&v=4";
+      return;
     }
     Log.d(LOG_TAG, "download url: " + url);
 
