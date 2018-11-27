@@ -15,6 +15,7 @@ public class Utils {
 
     private static final String LOG_TAG = Utils.class.getCanonicalName();
 
+    // no objects needed
     private Utils() {};
 
     public static File createImageFile(Context c, Member m, Bitmap bitmap) throws IOException {

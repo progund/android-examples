@@ -1,36 +1,17 @@
 package se.juneday.memberimages;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import se.juneday.memberimages.domain.Member;
 
@@ -60,7 +41,7 @@ public class SeparateActivity extends AppCompatActivity {
       public void onMemberChangeList(List<Member> members) {
         resetListView(members);
         SeparateActivity.this.members = members;
-        ActivitySwitcher.showToast(me, "Members updated");
+        ActivityHelper.showToast(me, "Members updated");
       }
 
       @Override
@@ -118,18 +99,18 @@ public class SeparateActivity extends AppCompatActivity {
   @Override
   public void onStart() {
     super.onStart();
-      ActivitySwitcher.showToast(this, "Updating members");
+      ActivityHelper.showToast(this, "Updating members");
     VolleyMember.getInstance(this).getMembers();
   }
 
   public void updateClick(View view) {
-    ActivitySwitcher.showToast(this, "Updating members");
+    ActivityHelper.showToast(this, "Updating members");
     VolleyMember.getInstance(this).getMembers();
   }
 
   /* Common */
   public void separateClick(View view) {
-    ActivitySwitcher.switchToSeparateActivity(this);
+    ActivityHelper.switchToSeparateActivity(this);
   }
 
 }
