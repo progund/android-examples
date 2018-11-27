@@ -6,10 +6,6 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-/**
- * Created by hesa on 2017-11-09.
- */
-
 public class ActivitySwitcher {
 
   private static final String LOG_TAG = ActivitySwitcher.class.getSimpleName();
