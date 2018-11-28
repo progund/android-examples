@@ -26,5 +26,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     compile 'com.android.volley:volley:1.0.0'
-
+    // Added for ObjectCache support
+    implementation files('libs/object-cache-0.1.jar')
 }

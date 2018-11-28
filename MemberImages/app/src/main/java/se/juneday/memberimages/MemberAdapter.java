@@ -17,18 +17,28 @@ import se.juneday.memberimages.domain.Member;
 
 public class MemberAdapter extends ArrayAdapter<Member> {
 
+    // String tag for logging
     private static final String LOG_TAG = MemberAdapter.class.getCanonicalName();
 
+    // Our model or data, a list of members
     private List<Member> members;
+
+    // Context, needed to find views etc
     private Context context;
 
     // Used to cache View
+    // Check out: http://www.vogella.com/tutorials/AndroidListView/article.html
     private static class ViewHolder {
         TextView nameView;
         TextView emailView;
         ImageView avatarView;
     }
 
+    /**
+     * Creates a MemberAdapter
+     * @param members members to create Views from
+     * @param context used to find views etc
+     */
     public MemberAdapter(List<Member> members, Context context) {
         super(context, R.layout.member_row, members);
         this.members = members;
@@ -38,6 +48,14 @@ public class MemberAdapter extends ArrayAdapter<Member> {
 
     private int lastPosition = -1;
 
+    /**
+     * Get the View (for a Member)
+     * @param position the position/index in the list of members
+     * @param convertView old view to reuse
+     * @param parent The parent view this View will be attached to
+     * @return a View representing the Member at index (position) .. to put in the ListView
+     * https://developer.android.com/reference/android/widget/Adapter.html#getView(int,%20android.view.View,%20android.view.ViewGroup)
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -60,8 +78,6 @@ public class MemberAdapter extends ArrayAdapter<Member> {
         }
 
         lastPosition = position;
-
-
 
         // Set ViewHolder variables
         viewHolder.nameView.setText(member.name());

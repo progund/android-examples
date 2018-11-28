@@ -22,11 +22,20 @@ import se.juneday.memberimages.domain.Member;
 
 public class VolleyMember {
 
+  // String tag for logging
   private static final String LOG_TAG = VolleyMember.class.getName();
 
+  // This is a singleton class, so this is THE one and only instance
   private static VolleyMember volleyMember;
+
+  // Context, needed to find views etc
   private Context context;
 
+  /**
+   * Method to get hold of the only instance
+   * @param context - used to create (if needed) the only instance
+   * @return the one and only instance
+   */
   public static synchronized VolleyMember getInstance(Context context) {
     if (volleyMember == null) {
       volleyMember = new VolleyMember(context);
@@ -35,22 +44,30 @@ public class VolleyMember {
     return volleyMember;
   }
 
+  // Private constructor to prevent intantiation
   private VolleyMember(Context context) {
     listeners = new ArrayList<>();
     this.context = context;
   }
 
+  // parses a JSON array and returns a list of Members
   private List<Member> jsonToMembers(JSONArray array) {
     Log.d(LOG_TAG, "jsonToMembers: " + array);
+
+    // Create an empty arraylist
     List<Member> memberList = new ArrayList<>();
+
+    // Loop through the elements in the array
     for (int i = 0; i < array.length(); i++) {
       Log.d(LOG_TAG, " parse JSON i: " + i);
       try {
+        // Extract name, email and avatarUrl
         JSONObject row = array.getJSONObject(i);
         String name = row.getString("name");
         String email = row.getString("email");
         String avatarUrl = row.getString("avatar");
         Log.d(LOG_TAG, name +  " " + email  + "   : " + avatarUrl);
+        //Create a new Member and add to the list
         Member m = new Member(name, email, avatarUrl);
         memberList.add(m);
       } catch (JSONException e) {
@@ -61,8 +78,12 @@ public class VolleyMember {
     return memberList;
   }
 
-  // The code below is "slightly" (nudge nudge) based on:
-  //   https://developer.android.com/training/volley/request.html
+
+  /**
+   * Get members from server. Inform listeners when finished.
+  * The code below is "slightly" (nudge nudge) based on:
+  *   https://developer.android.com/training/volley/request.html
+   */
   public void getMembers() {
     Log.d(LOG_TAG, "getMembers()");
     RequestQueue queue = Volley.newRequestQueue(context);
@@ -75,15 +96,23 @@ public class VolleyMember {
 
           @Override
           public void onResponse(JSONArray array) {
+            // Convert JSON array to List of Members
             List<Member> members = jsonToMembers(array);
+
+            // For each listeners inform about new List of members
             for (MemberChangeListener m : listeners) {
               m.onMemberChangeList(members);
             }
+
+            // For each member, manage avatar
             for (Member m : members) {
+              // Check if avatar file exists (already downloaded and stored)
               if (!Utils.avatarExists(context, m)) {
+                // avatar does not exist, invoke volley code to download it
                 Log.d(LOG_TAG, "  download avatar for " + m.name());
                 VolleyMember.getInstance(context).fetchAvatar(m);
               } else {
+                // already exists, skip download
                 Log.d(LOG_TAG, "  avatar already exists for " + m.name());
               }
             }
@@ -101,13 +130,17 @@ public class VolleyMember {
     queue.add(jsonArrayRequest);
   }
 
+  /**
+   * Downloads avatar for a Member
+   * @param member - member  to download avatar for
+   */
   public void fetchAvatar(final Member member) {
     Log.d(LOG_TAG, "getAvatars()");
     RequestQueue queue = Volley.newRequestQueue(context);
     Log.d(LOG_TAG, "  url: " + member.avatarUrl());
     String url = member.avatarUrl();
 
-    // if no url for member, use default
+    // if no url for member, simply do nada
     if ( (url == null) || url.equals ("null") ) {
 //      url = "https://avatars0.githubusercontent.com/u/19474334?s=400&u=1ade95c4770d096ec33107c05b51c99cfdd6ab01&v=4";
       return;
@@ -139,13 +172,18 @@ public class VolleyMember {
    MemberChangeListener
    ******************************************/
 
+  // internal list of listeners
   private List<MemberChangeListener> listeners;
 
   public interface MemberChangeListener {
+    // Invoked when VolleyMember has a new List of Member
     void onMemberChangeList(List<Member> members);
+
+    // Invoked when VolleyMember has a new avatar (as a bitmap)
     void onAvatarChange(Member member, Bitmap m);
   }
 
+  // Listener should call this method to get notified on change (se above methods)
   public void addMemberChangeListener(MemberChangeListener l) {
     listeners.add(l);
   }
