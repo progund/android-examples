@@ -99,6 +99,8 @@ public class VolleyMember {
             // Convert JSON array to List of Members
             List<Member> members = jsonToMembers(array);
 
+            Log.d(LOG_TAG, " response from server: " + members.size());
+
             // For each listeners inform about new List of members
             for (MemberChangeListener m : listeners) {
               m.onMemberChangeList(members);
@@ -128,6 +130,7 @@ public class VolleyMember {
 
     // Add the request to the RequestQueue.
     queue.add(jsonArrayRequest);
+    Log.d(LOG_TAG, " json request queued");
   }
 
   /**

@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.juneday.ObjectCache;
+import se.juneday.android.AndroidObjectCacheHelper;
+import se.juneday.android.AndroidObjectCacheHelper.AndroidObjectCacheHelperException;
 import se.juneday.memberimages.domain.Member;
 
 
@@ -31,18 +34,35 @@ public class MemberActivity extends AppCompatActivity {
   // Our model or data, a list of members
   private List<Member> members;
 
+  /* ObjectCache
+  private ObjectCache<Member> cache;
+  */
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_volley);
 
-    // EMpty aray
+    // Empty aray
     members = new ArrayList<>();
 
+    /* ObjectCache
+    String fileName =
+        null;
+    try {
+      fileName = AndroidObjectCacheHelper.objectCacheFileName(this, Member.class);
+    } catch (AndroidObjectCacheHelperException e) {
+      e.printStackTrace();
+    }
+    cache = new ObjectCache<>(fileName);
+    members = (List<Member>) cache.readObjects();
+    Log.d(LOG_TAG, "cache:  reading objects: " + members.size());
+   */
 
     resetListView();
 
     Log.d(LOG_TAG, " onCreate()");
+
   }
 
   private void updateImageView(Member member, Bitmap bitmap) {
@@ -94,6 +114,11 @@ public class MemberActivity extends AppCompatActivity {
         // reset listview with new members, update member (instance variable)
         MemberActivity.this.members = members;
         resetListView();
+
+        /* ObjectCache
+        Log.d(LOG_TAG, "cache: Storing objects: " + members.size() + " who called?");
+        cache.storeObjects(members);
+        */
 
         // Show toast to inform new data is displayed
         ActivityHelper.showToast(MemberActivity.this, "Members updated");
