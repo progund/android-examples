@@ -14,9 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.juneday.ObjectCache;
-import se.juneday.android.AndroidObjectCacheHelper;
-import se.juneday.android.AndroidObjectCacheHelper.AndroidObjectCacheHelperException;
 import se.juneday.memberimages.domain.Member;
 
 
@@ -33,8 +30,6 @@ public class MemberActivity extends AppCompatActivity {
 
   // Our model or data, a list of members
   private List<Member> members;
-
-  private ObjectCache<Member> cache;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
