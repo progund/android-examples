@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Instantiate the RequestQueue.
     RequestQueue queue = Volley.newRequestQueue(this);
-    String url =  "http://rameau.sandklef.com/all.json";
+    String url =  "https://raw.githubusercontent.com/progund/android-examples/master/common-data/products.json";
 
 
     JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
