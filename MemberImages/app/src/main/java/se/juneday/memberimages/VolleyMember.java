@@ -65,7 +65,7 @@ public class VolleyMember {
   // The code below is "slightly" (nudge nudge) based on:
   //   https://developer.android.com/training/volley/request.html
   public void getMembers() {
-    Log.d(LOG_TAG, "getMembers()");
+    Log.d(LOG_TAG, "getMembers() from url: " + Settings.url);
     RequestQueue queue = Volley.newRequestQueue(context);
 
     JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
@@ -76,6 +76,8 @@ public class VolleyMember {
 
           @Override
           public void onResponse(JSONArray array) {
+            Log.d(LOG_TAG, "getMembers() from url: " + Settings.url + " JSON:" + array);
+
             List<Member> members = jsonToMembers(array);
             for (MemberChangeListener m : listeners) {
               m.onMemberChangeList(members);
