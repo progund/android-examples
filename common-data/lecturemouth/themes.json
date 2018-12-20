@@ -1,3 +1,4 @@
 [
-    { "Basic": "https://raw.githubusercontent.com/progund/android-examples/master/common-data/lecturemouth/basic.json" }
+    { "name": "Basic",
+      "url": "https://raw.githubusercontent.com/progund/android-examples/master/common-data/lecturemouth/basic.json" }
 ]
