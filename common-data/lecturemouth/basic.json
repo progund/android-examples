@@ -2,5 +2,7 @@
     { "name": "Bird Scream",
       "url": "https://opengameart.org/sites/default/files/Bird%20Scream.wav"},
     { "name": "Applause",
-      "url": "https://opengameart.org/sites/default/files/applause.wav" }
+      "url": "https://opengameart.org/sites/default/files/applause.wav" },
+    { "name": "Applause 2",
+      "url": "https://opengameart.org/sites/default/files/Well%20Done%20CCBY3.ogg" }
 ]
