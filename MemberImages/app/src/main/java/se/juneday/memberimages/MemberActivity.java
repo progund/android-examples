@@ -34,9 +34,9 @@ public class MemberActivity extends AppCompatActivity {
   // Our model or data, a list of members
   private List<Member> members;
 
-  /* ObjectCache
-  private ObjectCache<Member> cache;
-  */
+  // ObjectCache
+  private ObjectCache<List<Member>> cache;
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -44,20 +44,19 @@ public class MemberActivity extends AppCompatActivity {
     setContentView(R.layout.activity_volley);
 
     // Empty aray
-    members = new ArrayList<>();
+    //    members = new ArrayList<>();
 
-    /* ObjectCache
-    String fileName =
-        null;
+    // ObjectCache
+    String fileName = null;
     try {
       fileName = AndroidObjectCacheHelper.objectCacheFileName(this, Member.class);
     } catch (AndroidObjectCacheHelperException e) {
       e.printStackTrace();
     }
     cache = new ObjectCache<>(fileName);
-    members = (List<Member>) cache.readObjects();
+    cache.timeout(1);
+    members = cache.readObject(new ArrayList<Member>());
     Log.d(LOG_TAG, "cache:  reading objects: " + members.size());
-   */
 
     resetListView();
 
@@ -115,10 +114,9 @@ public class MemberActivity extends AppCompatActivity {
         MemberActivity.this.members = members;
         resetListView();
 
-        /* ObjectCache
+        // ObjectCache
         Log.d(LOG_TAG, "cache: Storing objects: " + members.size() + " who called?");
-        cache.storeObjects(members);
-        */
+        cache.storeObject(members);
 
         // Show toast to inform new data is displayed
         ActivityHelper.showToast(MemberActivity.this, "Members updated");
