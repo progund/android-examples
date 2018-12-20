@@ -1,6 +1,5 @@
 package se.juneday.objectcacheexample;
 
-import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +20,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+
 import se.juneday.ObjectCache;
+import se.juneday.android.AndroidObjectCacheHelper;
 import se.juneday.objectcacheexample.Product.Builder;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,22 +40,12 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    PackageManager m = getPackageManager();
-    String s = getPackageName();
     try {
-      PackageInfo p = m.getPackageInfo(s, 0);
-      s = p.applicationInfo.dataDir;
-    } catch (PackageManager.NameNotFoundException e) {
-      Log.d(LOG_TAG, "Error, could not build file name for serialization", e);
+      cache = new ObjectCache<>(AndroidObjectCacheHelper.objectCacheFileName(this, Product.class));
+    } catch (AndroidObjectCacheHelper.AndroidObjectCacheHelperException e) {
+      e.printStackTrace();
     }
-    String fileName = s +
-        "/" +
-        MainActivity.class.getCanonicalName();
-
-    Log.d(LOG_TAG, "Using file: " + fileName);
-    cache = new ObjectCache<>(fileName);
-    cache.pull();
-    products = cache.get();
+    products = (List<Product>)cache.readObjects();
 
     if (products==null) {
       products = new ArrayList<>();
@@ -81,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Instantiate the RequestQueue.
     RequestQueue queue = Volley.newRequestQueue(this);
-    String url =  "http://rameau.sandklef.com/all.json";
+    String url =  "https://raw.githubusercontent.com/progund/android-examples/master/common-data/products.json";
 
 
     JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
@@ -115,8 +105,7 @@ public class MainActivity extends AppCompatActivity {
             if (tmpProducts!=null) {
               Log.d(LOG_TAG, "List, items: " + tmpProducts.size());
               products = tmpProducts;
-              cache.set(products);
-              cache.push();
+              cache.storeObjects(products);
               showToast("Cached " + products.size() + " products");
               updateList();
             }

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,77 +15,82 @@ import java.util.List;
 
 import se.juneday.memberimages.domain.Member;
 
-public class MemberAdapter extends ArrayAdapter<Member> implements View.OnClickListener {
+public class MemberAdapter extends ArrayAdapter<Member> {
 
+    // String tag for logging
     private static final String LOG_TAG = MemberAdapter.class.getCanonicalName();
-    private List<Member> dataSet;
-    Context mContext;
 
-    // View lookup cache
+    // Our model or data, a list of members
+    private List<Member> members;
+
+    // Context, needed to find views etc
+    private Context context;
+
+    // Used to cache View
+    // Check out: http://www.vogella.com/tutorials/AndroidListView/article.html
     private static class ViewHolder {
         TextView nameView;
         TextView emailView;
-
         ImageView avatarView;
     }
 
-    public MemberAdapter(List<Member> data, Context context) {
-        super(context, R.layout.member_row, data);
-        this.dataSet = data;
-        this.mContext=context;
-
+    /**
+     * Creates a MemberAdapter
+     * @param members members to create Views from
+     * @param context used to find views etc
+     */
+    public MemberAdapter(List<Member> members, Context context) {
+        super(context, R.layout.member_row, members);
+        this.members = members;
+        this.context = context;
     }
 
-    @Override
-    public void onClick(View v) {
-
-        int position=(Integer) v.getTag();
-        Object object= getItem(position);
-        Member member = (Member)object;
-
-        Log.d(LOG_TAG, "Release date " + member.name());
-    }
 
     private int lastPosition = -1;
 
+    /**
+     * Get the View (for a Member)
+     * @param position the position/index in the list of members
+     * @param convertView old view to reuse
+     * @param parent The parent view this View will be attached to
+     * @return a View representing the Member at index (position) .. to put in the ListView
+     * https://developer.android.com/reference/android/widget/Adapter.html#getView(int,%20android.view.View,%20android.view.ViewGroup)
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Get the data item for this position
+
+        // Get member at position
         Member member= getItem(position);
-        // Check if an existing view is being reused, otherwise inflate the view
-        ViewHolder viewHolder; // view lookup cache stored in tag
 
-        final View result;
+        ViewHolder viewHolder;
 
+        // Reused view or not
         if (convertView == null) {
 
             viewHolder = new ViewHolder();
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.member_row, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.member_row, parent, false);
             viewHolder.nameView = (TextView) convertView.findViewById(R.id.name);
             viewHolder.emailView = (TextView) convertView.findViewById(R.id.email);
             viewHolder.avatarView = (ImageView) convertView.findViewById(R.id.avatar);
-
-            result=convertView;
-
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
-            result=convertView;
         }
 
         lastPosition = position;
 
+        // Set ViewHolder variables
         viewHolder.nameView.setText(member.name());
         viewHolder.emailView.setText(member.email());
-
-        Bitmap bitmap = Utils.avatarBitmap(mContext, member);
+        Bitmap bitmap = Utils.avatarBitmap(context, member);
         if (bitmap != null) {
             Log.d(LOG_TAG, "  using existing file for " + member.name());
             viewHolder.avatarView.setImageBitmap(bitmap);
+        } else {
+            Log.d(LOG_TAG, "  using default resource for bitmap");
+            viewHolder.avatarView.setImageResource(R.drawable.ic_launcher_background);
         }
 
         return convertView;
-
     }
 }
