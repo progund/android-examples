@@ -59,7 +59,6 @@ public class SeparateActivity extends AppCompatActivity {
     listview = (ListView) findViewById(R.id.volley_list);
     adapter = new ArrayAdapter<>(this,
         android.R.layout.simple_list_item_1, members);
-
     listview.setAdapter(adapter);
   }
 
