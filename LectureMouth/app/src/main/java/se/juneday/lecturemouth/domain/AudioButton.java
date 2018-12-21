@@ -4,14 +4,20 @@ public class AudioButton {
 
     private String text;
     private String path;
+    private String url;
 
-    public AudioButton(String text, String path) {
-        this.text = text;
-        this.path = path;
+  public AudioButton(String text, String path, String url) {
+    this.text = text;
+    this.path = path;
+    this.url = url;
+  }
+
+  public String text() {
+        return text;
     }
 
-    public String text() {
-        return text;
+    public String url() {
+        return url;
     }
 
     public String path() {

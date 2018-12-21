@@ -1,6 +1,7 @@
 package se.juneday.lecturemouth;
 
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
@@ -22,11 +23,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+      Storage.getInstance(this).themesUpdate();
+
     }
 
     private void audioPlayer(String path, String fileName){
         //set up MediaPlayer
         MediaPlayer mp = new MediaPlayer();
+
 
         try {
             mp.setDataSource(path + File.separator + fileName);
@@ -44,15 +49,17 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout layout = findViewById(R.id.button_layout);
 
 
-        for (AudioButton button : Storage.getInstance(this).buttons()) {
+        for (final AudioButton button : Storage.getInstance(this).buttons()) {
             Log.d(LOG_TAG, " * " + button);
             Button b = new Button(this);
             b.setText(button.text());
             b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(LOG_TAG, " playing file");
-                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.collect5);
+                    Log.d(LOG_TAG, " playing file " + button.path());
+                    Uri uri = Uri.fromFile(new File(button.path()));
+                    Log.d(LOG_TAG, " playing file " + uri);
+                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(), uri);
                     mp.start();
                 }
             });
