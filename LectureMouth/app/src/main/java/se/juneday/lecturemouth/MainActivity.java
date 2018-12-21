@@ -4,15 +4,17 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
 import java.io.File;
+import java.util.List;
 
-import se.juneday.lecturemouth.domain.AudioButton;
+import se.juneday.lecturemouth.domain.AudioClip;
+import se.juneday.lecturemouth.domain.Theme;
+import se.juneday.lecturemouth.net.VolleyAudio;
 import se.juneday.lecturemouth.storage.Storage;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,21 +48,44 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
+        Storage.getInstance(this).registerStorageUpdateListener(new Storage.StorageUpdateListener() {
+            @Override
+            public void onStorageUpdate() {
+                Log.d(LOG_TAG, "onStorageUpdate()");
+                updateListView();
+            }
+        });
+        Storage.getInstance(this).themesUpdate();
+    }
+
+
+    private void updateListView() {
+        Log.d(LOG_TAG, "updateListView()");
         LinearLayout layout = findViewById(R.id.button_layout);
 
-
-        for (final AudioButton button : Storage.getInstance(this).buttons()) {
-            Log.d(LOG_TAG, " * " + button);
+        List<Theme> themes = Storage.getInstance(this).themes();
+        if (themes==null || themes.size() == 0) {
+            return ;
+        }
+        Theme theme = themes.get(0);
+        Log.d(LOG_TAG, "updateListView()  theme: " + theme);
+        for (final AudioClip clip : theme.audioClips()) {
+            Log.d(LOG_TAG, " * " + clip);
             Button b = new Button(this);
-            b.setText(button.text());
+            b.setText(clip.text());
             b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(LOG_TAG, " playing file " + button.path());
-                    Uri uri = Uri.fromFile(new File(button.path()));
-                    Log.d(LOG_TAG, " playing file " + uri);
-                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(), uri);
-                    mp.start();
+                    Log.d(LOG_TAG, " playing file " + clip.path());
+                    Uri uri = Uri.fromFile(new File(VolleyAudio.audioFileDir(MainActivity.this) +
+                            VolleyAudio.FILE_SEP + clip.path()));
+                    Log.d(LOG_TAG, " playing file in mp: " + uri);
+                   MediaPlayer mp = MediaPlayer.create(MainActivity.this, uri);
+                    Log.d(LOG_TAG, " playing file with mp: " +
+                            mp);
+                    if (mp!=null) {
+                        mp.start();
+                    }
                 }
             });
             layout.addView(b);
