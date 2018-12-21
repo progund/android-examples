@@ -5,8 +5,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.juneday.lecturemouth.domain.AudioButton;
-import se.juneday.lecturemouth.net.Theme;
+import se.juneday.lecturemouth.domain.AudioClip;
+import se.juneday.lecturemouth.domain.Theme;
 import se.juneday.lecturemouth.net.VolleyAudio;
 import se.juneday.lecturemouth.net.VolleyAudio.AudioChangeListener;
 
@@ -24,20 +24,30 @@ public class Storage {
         VolleyAudio.getInstance(context).addAudioChangeListener(new AudioChangeListener() {
 
           @Override
-          public void onAudioButtonsChangeList(List<AudioButton> audioButtons) {
+          public void onAudioClipsChange(Theme theme, List<AudioClip> audioButtons) {
             Log.d(LOG_TAG, "onAudioChangeList() " + audioButtons);
-            for (AudioButton ab : audioButtons) {
+            for (AudioClip ab : audioButtons) {
               Log.d(LOG_TAG, " * " + ab + "    --- getting (in e near future) audio file");
-              VolleyAudio.getInstance(context).getAudioFile(ab);
+              VolleyAudio.getInstance(context).getAudioFile(theme, ab);
+              theme.addAudionClip(ab);
+            }
+            for (StorageUpdateListener listener : listeners) {
+                Log.d(LOG_TAG, " inform listener: " + listener.getClass().getSimpleName());
+                listener.onStorageUpdate();
             }
           }
 
           @Override
-          public void onThemeChangeList(List<Theme> themes) {
+          public void onThemeChange(List<Theme> themes) {
             Log.d(LOG_TAG, "onThemeChangeList() " + themes);
             for (Theme t : themes) {
               Log.d(LOG_TAG, " * " + t + "    --- getting audio theme");
               VolleyAudio.getInstance(context).getAudioTheme(t);
+              Storage.instance.themes = themes;
+            }
+            for (StorageUpdateListener listener : listeners) {
+                Log.d(LOG_TAG, " inform listener: " + listener.getClass().getSimpleName());
+                listener.onStorageUpdate();
             }
           }
         });
@@ -50,18 +60,22 @@ public class Storage {
         return instance;
     }
 
-  public List<AudioButton> buttons() {
-    List<AudioButton> buttons = new ArrayList<>();
-    buttons.add(new AudioButton("Laugh", "kkk", "laugh.mp3"));
-    return buttons;
-  }
-
   public List<Theme> themes() {
     return themes;
   }
 
   public void themesUpdate() {
     VolleyAudio.getInstance(context).getThemes();
+  }
+
+
+  public static List<StorageUpdateListener> listeners = new ArrayList<>();
+  public void registerStorageUpdateListener(StorageUpdateListener listener) {
+        Log.d(LOG_TAG, "registerStorageUpdateListener: " + listener.getClass().getSimpleName());
+      this.listeners.add(listener);
+  }
+  public static interface StorageUpdateListener {
+      public void onStorageUpdate();
   }
 
 }

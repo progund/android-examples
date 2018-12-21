@@ -1,6 +1,7 @@
 package se.juneday.lecturemouth.net;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -11,14 +12,14 @@ import com.android.volley.toolbox.Volley;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import se.juneday.lecturemouth.domain.AudioButton;
+import se.juneday.lecturemouth.domain.AudioClip;
+import se.juneday.lecturemouth.domain.Theme;
 
 public class VolleyAudio {
 
@@ -31,7 +32,7 @@ public class VolleyAudio {
   private RequestQueue queue;
 
   // String constants for files and dirs
-  private static final String FILE_SEP = "/" ;
+  public static final String FILE_SEP = "/" ;
   private static final String FIELD_SEP = "_" ;
   private static final Object AUDIO_DIR = "audio";
   private static final Object JSON_DIR = "json";
@@ -64,7 +65,7 @@ public class VolleyAudio {
             List<Theme> themes = jsonToThemesList(array);
             for (AudioChangeListener m : listeners) {
               Log.d(LOG_TAG, " getThemes(), informing " + m.getClass().getSimpleName());
-              m.onThemeChangeList(themes);
+              m.onThemeChange(themes);
             }
           }
         }, new Response.ErrorListener() {
@@ -88,10 +89,10 @@ public class VolleyAudio {
           @Override
           public void onResponse(JSONArray array) {
             storeJsonToFileUrl(array.toString(), theme.url());
-            List<AudioButton> Audios = jsonToAudios(array);
+            List<AudioClip> audios = jsonToAudios(array);
             for (AudioChangeListener m : listeners) {
               Log.d(LOG_TAG, " getAudio(), informing " + m.getClass().getSimpleName());
-              m.onAudioButtonsChangeList(Audios);
+              m.onAudioClipsChange(theme, audios);
             }
           }
         }, new Response.ErrorListener() {
@@ -107,7 +108,7 @@ public class VolleyAudio {
   }
 
 
-  public File getAudioFile(final AudioButton ab) {
+  public File getAudioFile(Theme theme, final AudioClip ab) {
     final String fileName = audioFileDir(context)+ urlToName(ab.url());
     File file = new File(fileName);
     Log.d(LOG_TAG, " getAudio() from : " + ab.url() + "  --->" + fileName + "  --  " + file.getName());
@@ -143,16 +144,16 @@ public class VolleyAudio {
     return null;
   }
 
-  private List<AudioButton> jsonToAudios(JSONArray array) {
+  private List<AudioClip> jsonToAudios(JSONArray array) {
     Log.d(LOG_TAG,"jsonToAudios() : " + array);
-    List<AudioButton> AudioList = new ArrayList<>();
+    List<AudioClip> AudioList = new ArrayList<>();
     for (int i = 0; i < array.length(); i++) {
       try {
         JSONObject row = array.getJSONObject(i);
         String name = row.getString("name");
         String url = row.getString("url");
 
-        AudioButton m = new AudioButton(name, urlToName(url), url);
+        AudioClip m = new AudioClip(name, urlToName(url), url);
         AudioList.add(m);
         Log.d(LOG_TAG," * " + m);
       } catch (JSONException e) {
@@ -184,7 +185,7 @@ public class VolleyAudio {
   public String urlToName(String url) {
     String parts[] = url.split("/");
     String fileName = parts[parts.length-1];
-    return fileName;
+    return Uri.encode(fileName);
   }
 
   private File storeJsonToFileUrl(String data, String url) {
@@ -244,12 +245,12 @@ public class VolleyAudio {
     return new File(fileName);
   }
 
-  private static String audioFileDir(Context c) {
+  public static String audioFileDir(Context c) {
     return c.getFilesDir().getAbsoluteFile()+
         FILE_SEP + AUDIO_DIR + FILE_SEP;
   }
 
-  private static String jsonFileDir(Context c) {
+  public static String jsonFileDir(Context c) {
     return c.getFilesDir().getAbsoluteFile()+
         FILE_SEP + JSON_DIR + FILE_SEP;
   }
@@ -261,8 +262,8 @@ public class VolleyAudio {
   private List<AudioChangeListener> listeners;
 
   public interface AudioChangeListener {
-    void onAudioButtonsChangeList(List<AudioButton> audioButtons);
-    void onThemeChangeList(List<Theme> themes);
+    void onAudioClipsChange(Theme theme, List<AudioClip> audioButtons);
+    void onThemeChange(List<Theme> themes);
   }
 
   public void addAudioChangeListener(AudioChangeListener l) {
